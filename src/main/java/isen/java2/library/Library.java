@@ -4,11 +4,8 @@
 package isen.java2.library;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import isen.java2.library.exceptions.ItemAlreadyBorrowedException;
 import isen.java2.library.exceptions.ItemAlreadyReturnedException;
@@ -178,17 +175,9 @@ public class Library {
 	 * @return a @List of culturalItems
 	 */
 	public List<CulturalItem> getTopTenItems() {
-		// FIXME replace this by a lambda expression
 		List<CulturalItem> top = new LinkedList<>(this.listOfBooks);
 		top.addAll(this.listOfMovies);
-		Collections.sort(top, new Comparator<CulturalItem>() {
-
-			@Override
-			public int compare(CulturalItem o1, CulturalItem o2) {
-				return o2.getAverageRating().compareTo(o1.getAverageRating());
-			}
-
-		});
+		Collections.sort(top, (o1, o2) -> o2.getAverageRating().compareTo(o1.getAverageRating()));
 		return top.size() > 10 ? top.subList(0, 10): top;
 	}
 
@@ -200,14 +189,11 @@ public class Library {
 	 * @param title
 	 * @return
 	 */
-	private <T extends CulturalItem> T searchByTitle(String title, List<T> items) throws ItemNotFoundException {
-		// FIXME replace this by a lambda expression
-		for (T item : items) {
-			if (item.getTitle().equals(title)) {
-				return item;
-			}
-		}
-		throw new ItemNotFoundException();
+	private <T extends CulturalItem> T searchByTitle(String title, List<T> items) throws ItemNotFoundException { // to do so I should import the stream API
+		return items.stream()
+				.filter(item -> item.getTitle().equals(title))
+				.findFirst()
+				.orElseThrow(ItemNotFoundException::new);
 	}
 
 	/**
@@ -266,8 +252,6 @@ public class Library {
 	 */
 	private <T extends CulturalItem> List<T> filterByGenre(Genre genre, List<T> items) {
 
-		// FIXME replace this by a lambda expression
-	
 		List<T> filteredList = new LinkedList<>(items);
 
 		filteredList.removeIf(t -> !t.getGenres().contains(genre));
@@ -297,16 +281,9 @@ public class Library {
 	 * @return
 	 */
 	private <T extends CulturalItem> List<T> filterByBorrower(List<T> items, String borrower) {
-		// FIXME replace this by a lambda expression
 		List<T> filteredList = new LinkedList<>(items);
 
-		filteredList.removeIf(new Predicate<CulturalItem>() {
-
-			@Override
-			public boolean test(CulturalItem t) {
-				return (!t.isBorrowed()) || (t.isBorrowed() && !t.getBorrower().equals(borrower));
-			}
-		});
+		filteredList.removeIf(t -> (!t.isBorrowed()) || (t.isBorrowed() && !t.getBorrower().equals(borrower)));
 		return filteredList;
 	}
 
@@ -317,7 +294,6 @@ public class Library {
 	 * @param type
 	 */
 	private <T extends CulturalItem> void printSortedList(List<T> items, String type) {
-		// FIXME there is something to change here if you want your application to work ;)
 		Collections.sort(items);
 		this.printList(items, type);
 	}
@@ -327,15 +303,7 @@ public class Library {
 	 */
 	private <T extends CulturalItem> void printList(List<T> items, String type) {
 		System.out.println("======= " + type + " =============");
-		// FIXME replace this by a lambda expression
-		items.forEach(new Consumer<T>() {
-
-			@Override
-			public void accept(T it) {
-				it.print();
-
-			}
-		});
+		items.forEach(it -> it.print());
 	}
 
 
