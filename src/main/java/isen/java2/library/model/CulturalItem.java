@@ -67,15 +67,12 @@ public abstract class CulturalItem implements Comparable<CulturalItem> {
 	 * @return the average rating of this item
 	 */
 	public Double getAverageRating() {
-		// FIXME: again, a perfect place for a lambda expression
-		if (this.ratings.isEmpty()) {
-			return 0.0;
-		}
-		int avg = 0;
-		for (Integer rating : this.ratings.values()) {
-			avg += rating;
-		}
-		return avg / (double) this.ratings.values().size();
+		// Use Java streams to calculate average rating
+		return this.ratings.isEmpty() ? 0.0 : 
+			this.ratings.values().stream()
+				.mapToInt(Integer::intValue)
+				.average()
+				.orElse(0.0);
 	}
 
 	/**

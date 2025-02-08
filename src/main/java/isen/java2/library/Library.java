@@ -4,8 +4,11 @@
 package isen.java2.library;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import isen.java2.library.exceptions.ItemAlreadyBorrowedException;
 import isen.java2.library.exceptions.ItemAlreadyReturnedException;
@@ -45,7 +48,7 @@ public class Library {
 	/**
 	 * Adds a Movie to the library
 	 * 
-	 * @param Movie
+	 * @param movie
 	 */
 	public void add(Movie movie) {
 		this.listOfMovies.add(movie);
@@ -63,7 +66,7 @@ public class Library {
 	/**
 	 * Allows a given user to borrow a Movie
 	 * 
-	 * @param MovieTitle
+	 * @param movieTitle
 	 * @param borrower
 	 * @return
 	 * @throws ItemNotFoundException
@@ -104,6 +107,7 @@ public class Library {
 	 * 
 	 * @param itemTitle
 	 * @param borrower
+	 * @param listOfItems
 	 * @return
 	 * @throws ItemAlreadyBorrowedException
 	 * @throws ItemNotFoundException
@@ -132,7 +136,7 @@ public class Library {
 	/**
 	 * Method allowing to rate a Movie
 	 * 
-	 * @param MovieTitle
+	 * @param movieTitle
 	 * @param person
 	 * @param rating
 	 * @throws ItemNotFoundException
@@ -187,9 +191,11 @@ public class Library {
 	 * these private generic methods stay unchanged
 	 * 
 	 * @param title
+	 * @param items
 	 * @return
+	 * @throws ItemNotFoundException
 	 */
-	private <T extends CulturalItem> T searchByTitle(String title, List<T> items) throws ItemNotFoundException { // to do so I should import the stream API
+	private <T extends CulturalItem> T searchByTitle(String title, List<T> items) throws ItemNotFoundException {
 		return items.stream()
 				.filter(item -> item.getTitle().equals(title))
 				.findFirst()
@@ -207,6 +213,7 @@ public class Library {
 
 	/**
 	 * Method returning a list of our library
+	 * @return
 	 */
 	public List<CulturalItem> getCatalogue() {
 		List<CulturalItem> items = new LinkedList<>();
@@ -233,6 +240,7 @@ public class Library {
 	 * order
 	 * 
 	 * @param genre
+	 * @return
 	 */
 	public List<CulturalItem> getByGenre(Genre genre) {
 		List<CulturalItem> items = new LinkedList<>();
@@ -262,7 +270,7 @@ public class Library {
 	 * Method searching items by genre and printing the result in alphabetical
 	 * order
 	 * 
-	 * @param genre
+	 * @param borrower
 	 */
 	public List<CulturalItem> getByBorrower(String borrower) {
 		List<CulturalItem> items = new LinkedList<>();
@@ -277,7 +285,6 @@ public class Library {
 	 * 
 	 * @param items
 	 * @param borrower
-	 * @param genre
 	 * @return
 	 */
 	private <T extends CulturalItem> List<T> filterByBorrower(List<T> items, String borrower) {
@@ -304,6 +311,7 @@ public class Library {
 	private <T extends CulturalItem> void printList(List<T> items, String type) {
 		System.out.println("======= " + type + " =============");
 		items.forEach(it -> it.print());
+
 	}
 
 
